@@ -5,12 +5,28 @@
       "PackagePath": "staticwebassets\\user_management_system.bundle.scp.css"
     },
     {
+      "Id": "D:\\Projects\\learn\\C#\\user_management_system\\wwwroot\\css\\main.css",
+      "PackagePath": "staticwebassets\\css\\main.css"
+    },
+    {
+      "Id": "D:\\Projects\\learn\\C#\\user_management_system\\wwwroot\\css\\main.min.css",
+      "PackagePath": "staticwebassets\\css\\main.min.css"
+    },
+    {
       "Id": "D:\\Projects\\learn\\C#\\user_management_system\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
       "Id": "D:\\Projects\\learn\\C#\\user_management_system\\wwwroot\\favicon.ico",
       "PackagePath": "staticwebassets\\favicon.ico"
+    },
+    {
+      "Id": "D:\\Projects\\learn\\C#\\user_management_system\\wwwroot\\js\\main.js",
+      "PackagePath": "staticwebassets\\js\\main.js"
+    },
+    {
+      "Id": "D:\\Projects\\learn\\C#\\user_management_system\\wwwroot\\js\\main.min.js",
+      "PackagePath": "staticwebassets\\js\\main.min.js"
     },
     {
       "Id": "D:\\Projects\\learn\\C#\\user_management_system\\wwwroot\\js\\site.js",

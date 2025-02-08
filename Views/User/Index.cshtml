@@ -1,0 +1,285 @@
+@model List<user_management_system.Models.User>
+
+@{
+    ViewData["Title"] = "User Management System";
+}
+
+<style>
+    .th{
+        font-size: 12px;
+    }
+
+    .btn2{
+        width: 100px;
+    }
+</style>
+
+<div class="container mt-4">
+    <h2 class="mb-4">User List</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div id="deleteToast" class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        @TempData["SuccessMessage"]
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var toast = new bootstrap.Toast(document.getElementById('deleteToast'));
+                toast.show();
+            });
+        </script>
+    }
+
+    <div class="mb-3">
+        <div class="row">
+            <div class="col-md-6">
+                <a href="@Url.Action("Create", "User")" class="btn btn-primary">Add New User</a>
+                <a href="@Url.Action("ExportToExcel", "User")" class="btn btn-success">Export to Excel</a>              
+            </div>
+            
+            <div class="col-md-6">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" required>
+
+                <label for="endDate">End Date:</label>
+                <input type="date" id="endDate" required>
+
+                <button onclick="fetchUserRegistrationData() " class="btn btn-success">Generate Chart</button>
+            </div>
+
+            <div class="card p-3 mb-3 shadow-sm mt-4">
+                <h5>Filters</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="departmentFilter">Filter by Department:</label>
+                        <select id="departmentFilter" class="form-select" onchange="applyFilters()">
+                            <option value="">All</option>
+                            <option value="HR">HR</option>
+                            <option value="IT">IT</option>
+                            <option value="Finance">Finance</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="positionFilter">Filter by Position:</label>
+                        <select id="positionFilter" class="form-select" onchange="applyFilters()">
+                            <option value="">All</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Supervisor">Supervisor</option>
+                            <option value="Intern">Intern</option>
+                            <option value="Staff">Staff</option>
+                            <option value="Technician">Technician</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="card shadow-lg border-0">
+        <div class="card-body bg-light">
+            <h3 class="text-center mb-4">User Management</h3>
+            
+            <div class="table-responsive-sm">
+                <table id="table1" class="table table-striped table-hover text-center align-middle cell-border" style="width: 100%;">
+                    <thead class="table-primary text-dark">
+                        <tr>
+                            <th class="py-3">No.</th>
+                            <th class="py-3">Batch ID</th>
+                            <th class="py-3">Full Name</th>
+                            <th class="py-3">Email</th>
+                            <th class="py-3">Position</th>
+                            <th class="py-3">Reporting To</th>
+                            <th class="py-3">Department</th>
+                            <th class="py-3">Date Joined</th>
+                            <th class="py-3">User Type</th>
+                            <th class="py-3">Access</th>
+                            <th class="py-3">Added By</th>
+                            <th class="py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr class="table-light">
+                                <td class="py-2">@(Model.IndexOf(user) + 1)</td>
+                                <td class="py-2">@user.BatchId</td>
+                                <td class="py-2">@user.Fullname</td>
+                                <td class="py-2">@user.Email</td>
+                                <td class="py-2">@user.Position</td>
+                                <td class="py-2">@user.ReportingTo</td>
+                                <td class="py-2">@user.Department</td>
+                                <td class="py-2">@user.DateJoined.ToString("yyyy-MM-dd")</td>
+                                <td class="py-2">@user.UserType</td>
+                                <td class="py-2">@user.Access</td>
+                                <td class="py-2">@user.AddedBy</td>
+                                <td class="py-2">
+                                    <div class="col-md-12">
+                                        <a href="@Url.Action("Edit", "User", new { id = user.Id })" class="btn btn-warning btn-sm me-1">Edit</a>
+                                        <form asp-action="Delete" method="post" class="d-inline" onsubmit="return confirmDelete();">
+                                            <input type="hidden" name="id" value="@user.Id" />
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="chartSection" class="card shadow mt-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+        </div>
+        <div class="card-body">
+            <div class="chart-bar">
+                <canvas id="userChart" style="width:100%;max-width:700px"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+</div>
+
+<script>
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this user?");
+    }
+</script>
+
+<script>
+    new DataTable('#table1', {
+        responsive: true,
+        paging: true,
+        searching: true,
+        ordering: true,
+        info: true,
+        layout: {
+            topStart: 'pageLength',
+            topEnd: 'search',
+            bottomStart: 'info',
+            bottomEnd: 'paging'
+        }
+    });
+
+</script>
+
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("chartSection").style.display = "none";
+});
+
+let chartInstance = null;
+
+function fetchUserRegistrationData() {
+    let startDate = document.getElementById("startDate").value;
+    let endDate = document.getElementById("endDate").value;
+
+    if (!startDate || !endDate) {
+        alert("Please select both start and end dates.");
+        return;
+    }
+
+    fetch(`/User/GetUserRegistrationData?startDate=${startDate}&endDate=${endDate}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.length > 0) {
+                document.getElementById("chartSection").style.display = "block";
+            } else {
+                document.getElementById("chartSection").style.display = "none";
+            }
+            updateChart(data);
+            filterTable(startDate, endDate);
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+function updateChart(data) {
+    let ctx = document.getElementById("userChart").getContext("2d");
+
+    let labels = data.map(item => item.date);
+    let values = data.map(item => item.count);
+
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+
+    chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "User Registrations",
+                data: values,
+                backgroundColor: "rgba(75, 192, 192, 0.6)",
+                borderColor: "rgba(75, 192, 192, 1)",
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: 'Month' } },
+                y: { 
+                    beginAtZero: true, 
+                    max: 30 
+                    }
+            }
+        }
+    });
+}
+
+function filterTable(startDate, endDate) {
+    let rows = document.querySelectorAll("#table1 tbody tr");
+
+    rows.forEach(row => {
+        let dateCell = row.cells[7].textContent.trim();
+        if (dateCell >= startDate && dateCell <= endDate) {
+            row.style.display = "";
+        } else {
+            row.style.display = "none";
+        }
+    });
+}
+
+</script>
+
+<script>
+    function applyFilters() {
+        let selectedDepartment = document.getElementById("departmentFilter").value.toLowerCase();
+        let selectedPosition = document.getElementById("positionFilter").value.toLowerCase();
+        let rows = document.querySelectorAll("#table1 tbody tr");
+
+        rows.forEach(row => {
+            let department = row.cells[6].textContent.toLowerCase();
+            let position = row.cells[4].textContent.toLowerCase();
+
+            let matchesDepartment = selectedDepartment === "" || department === selectedDepartment;
+            let matchesPosition = selectedPosition === "" || position === selectedPosition;
+
+            if (matchesDepartment && matchesPosition) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    }
+</script>
+
+
+

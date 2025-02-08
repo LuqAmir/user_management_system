@@ -3,6 +3,25 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome to the User Management System</h1>
+    <p>
+        This application helps administrators manage users efficiently. You can add, edit, and monitor users in the system.
+    </p>
+    
+    <p>
+        To access the system, please log in with your credentials.
+    </p>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <p>
+            <a class="btn btn-primary" asp-area="" asp-controller="User" asp-action="Index">Manage Users</a>
+        </p>
+    }
+    else
+    {
+        <p>
+            <a class="btn btn-primary" asp-area="" asp-controller="Auth" asp-action="Login">Login</a>
+        </p>
+    }
 </div>

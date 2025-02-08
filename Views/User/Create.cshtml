@@ -1,0 +1,115 @@
+@model user_management_system.Models.User
+
+@{
+    ViewData["Title"] = "Add New User";
+}
+
+<div class="container mt-4">
+    <h2>Add New User</h2>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input asp-for="Fullname" class="form-control" placeholder="Enter Full Name" required />
+            <span asp-validation-for="Fullname" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" type="email" class="form-control" placeholder="Enter Email" required />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input asp-for="Username" class="form-control" placeholder="Enter Username" required />
+            <span asp-validation-for="Username" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <div class="input-group">
+                <input asp-for="Password" type="password" class="form-control" id="passwordField" placeholder="Enter Password" required />
+                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">👁</button>
+            </div>
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Position</label>
+            <select asp-for="Position" class="form-control" required>
+                <option value="">Please select Position</option>
+                <option value="Manager">Manager</option>
+                <option value="Supervisor">Supervisor</option>
+                <option value="Staff">Staff</option>
+                <option value="Technician">Technician</option>
+                <option value="Intern">Intern</option>
+            </select>
+            <span asp-validation-for="Position" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Reporting To</label>
+            <input asp-for="ReportingTo" class="form-control" placeholder="Enter Supervisor Name" required />
+            <span asp-validation-for="ReportingTo" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Department</label>
+            <select asp-for="Department" class="form-control" required>
+                <option value="">Please select Department</option>
+                <option value="HR">HR</option>
+                <option value="IT">IT</option>
+                <option value="Finance">Finance</option>
+                <option value="Administration">Administration</option>
+            </select>
+            <span asp-validation-for="Department" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Batch ID</label>
+            <input asp-for="BatchId" type="number" class="form-control" placeholder="Enter Batch ID (0000 - 9999)" min="0" max="9999" required />
+            <span asp-validation-for="BatchId" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Date Joined</label>
+            <input asp-for="DateJoined" type="date" class="form-control" required />
+            <span asp-validation-for="DateJoined" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">User Type</label>
+            <select asp-for="UserType" class="form-control" required>
+                <option value="">Please select User Type</option>
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+            </select>
+            <span asp-validation-for="UserType" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Access</label>
+            <select asp-for="Access" class="form-control" required>
+                <option value="">Please select Access</option>
+                <option value="Full">Full</option>
+                <option value="Restricted">Restricted</option>
+            </select>
+            <span asp-validation-for="Access" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="@Url.Action("Index", "Users")" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+<script>
+    function togglePassword() {
+        var passwordField = document.getElementById("passwordField");
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+        } else {
+            passwordField.type = "password";
+        }
+    }
+</script>
